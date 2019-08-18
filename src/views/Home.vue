@@ -1,18 +1,30 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div>
+    <ul>
+      <li>
+        <router-link to="List">List</router-link>
+      </li>
+      <li>
+        <router-link to="Basic">Basic</router-link>
+      </li>
+      <li>
+        <router-link to="Dday">Dday</router-link>
+      </li>
+    </ul>
+
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import List from "../components/List";
+import Basic from "../components/Basic";
+import Dday from "../components/Dday"
 
 export default {
-  name: "home",
   components: {
-    HelloWorld
+    List,
+    Basic
   }
 };
 </script>
