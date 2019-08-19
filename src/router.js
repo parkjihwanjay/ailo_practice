@@ -6,6 +6,7 @@ import Home from "./views/Home.vue";
 import List from "./components/List.vue";
 import Basic from "./components/Basic.vue";
 import Dday from "./components/Dday.vue";
+import Calendar from "./components/Calendar.vue";
 
 Vue.use(Router);
 
@@ -19,18 +20,23 @@ export default new Router({
         },
         {
             path: "/list",
-            name: "list",
+            name: "List",
             component: List
         },
         {
             path: "/basic",
-            name: "basic",
+            name: "Basic",
             component: Basic
         },
         {
             path: "/Dday",
             name: "Dday",
             component: Dday
+        },
+        {
+            path: "/calendar",
+            name: "Calendar",
+            component: Calendar
         }
     ]
 });

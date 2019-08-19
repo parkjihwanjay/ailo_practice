@@ -19,7 +19,7 @@ export default {
     start_date: function(start_date) {
       //   console.log(start_date);
       let Dday = 0;
-
+      start_date = new Date(start_date);
       if (start_date < this.today) {
         Dday = this.getDday(start_date, this.today);
         this.Dday = "-" + Dday;

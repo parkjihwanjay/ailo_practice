@@ -1,14 +1,19 @@
 <template>
   <div class="list_box">
-    <div class="list" v-for="(list, index) in lists" :key="index">
-      <div @dblclick="click(index)" :class="{'clickon' : list.status === 'clickon'}">{{index}}</div>
-      <input type="text" v-if="list.status === 'clickon' " v-model="list.memo" />
-      <img
-        @click="trash(index)"
-        class="trash_img"
-        v-if="list.status === 'clickon'"
-        src="https://www.flaticon.com/premium-icon/icons/svg/484/484662.svg"
-      />
+    <div class="list" v-for="(list, Bindex) in lists" :key="Bindex">
+      <div class="list flex" v-for="(block, Sindex) in list" :key="(Bindex, Sindex)">
+        <div
+          @dblclick="click(Bindex, Sindex)"
+          :class="{'clickon' : lists[Bindex][Sindex].status === 'clickon'}"
+        >{{Bindex}}</div>
+        <input type="text" v-if="list.status === 'clickon' " v-model="list.memo" />
+        <img
+          @click="trash(Bindex, Sindex)"
+          class="trash_img"
+          v-if="list.status === 'clickon'"
+          src="https://www.flaticon.com/premium-icon/icons/svg/484/484662.svg"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -23,24 +28,30 @@ export default {
   },
   created: function() {
     for (let i = 0; i < 24; i++) {
-      this.lists.push({ status: "not_click" });
+      this.lists[i] = new Array();
+      for (let y = 0; y < 10; y++) {
+        this.lists[i].push({ status: "not_click" });
+      }
     }
+
     // console.log(this.lists);
   },
   methods: {
-    click: function(index) {
-      if (this.lists[index].status === "not_click") {
-        this.lists[index].status = "clickon";
+    click: function(Bindex, Sindex) {
+      console.log("전달됨");
+      if (this.lists[Bindex][Sindex].status === "not_click") {
+        this.lists[Bindex][Sindex].status = "clickon";
       } else {
-        this.lists[index].status = "not_click";
+        this.lists[Bindex][Sindex].status = "not_click";
       }
 
-      if (this.lists[index].memo !== "") this.lists[index].memo = "";
+      if (this.lists[Bindex][Sindex].memo !== "")
+        this.lists[Bindex][Sindex].memo = "";
       // console.log(this.lists[index]);
     },
-    trash: function(index) {
-      this.lists[index].status = "not_click";
-      this.lists[index].memo = "";
+    trash: function(Bindex, Sindex) {
+      this.lists[Bindex][Sindex].status = "not_click";
+      this.lists[Bindex][Sindex].memo = "";
     }
   }
 };
@@ -61,6 +72,9 @@ export default {
 }
 .trash_img {
   width: 4%;
+}
+.flex {
+  display: flex;
 }
 </style>
 
