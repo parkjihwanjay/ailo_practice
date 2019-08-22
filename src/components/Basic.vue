@@ -2,7 +2,13 @@
   <div>
     <div>다이어리 만들기</div>
     <div>섹션</div>
-    <input type="checkbox" name="section1" v-model="basic_customizing.section[0].checked" />
+
+    <div v-for="element in basic_customizing.section" :key="element.name">
+      <input type="checkbox" :name="element.name" v-model="element.checked" />
+      <label :for="element">{{element.name}}</label>
+    </div>
+
+    <!-- <input type="checkbox" name="section1" v-model="basic_customizing.section[0].checked" />
     <label :for="basic_customizing.section[0]">{{basic_customizing.section[0].name}}</label>
     <br />
     <input type="checkbox" name="section2" v-model="basic_customizing.section[1].checked" />
@@ -16,7 +22,7 @@
     <br />
     <input type="checkbox" name="section5" v-model="basic_customizing.section[4].checked" />
     <label :for="basic_customizing.section[4]">{{basic_customizing.section[4].name}}</label>
-    <br />
+    <br />-->
 
     <div>배열</div>
     <input type="radio" name="array" v-model="basic_customizing.array" value="M-D-M-D" />M-D-M-D
@@ -31,7 +37,13 @@
 
     <div>Daily</div>
     <div>기본 구성</div>
-    <input
+
+    <div v-for="element in basic_customizing.basic_component" :key="element.name">
+      <input type="checkbox" :name="element.name" v-model="element.checked" />
+      <label :for="element.name">{{element.name}}</label>
+    </div>
+
+    <!-- <input
       type="checkbox"
       name="basic_component"
       v-model="basic_customizing.basic_component[0].checked"
@@ -65,7 +77,7 @@
       v-model="basic_customizing.basic_component[4].checked"
     />
     <label :for="basic_customizing.basic_component[4]">{{basic_customizing.basic_component[4].name}}</label>
-    <br />
+    <br />-->
 
     <input type="button" value="적용하기" @click="show_basic_customizing" />
   </div>

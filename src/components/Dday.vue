@@ -22,10 +22,10 @@ export default {
       start_date = new Date(start_date);
       if (start_date < this.today) {
         Dday = this.getDday(start_date, this.today);
-        this.Dday = "-" + Dday;
+        this.Dday = "+" + Dday;
       } else {
         Dday = this.getDday(this.today, start_date);
-        this.Dday = "+" + Dday;
+        this.Dday = "-" + Dday;
       }
     }
   },

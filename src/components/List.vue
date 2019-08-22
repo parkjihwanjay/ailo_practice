@@ -1,20 +1,22 @@
 <template>
   <div class="list_box">
     <div class="list" v-for="(list, Bindex) in lists" :key="Bindex">
-      <div class="list flex" v-for="(block, Sindex) in list" :key="(Bindex, Sindex)">
-        <div
-          @dblclick="click(Bindex, Sindex)"
-          :class="{'clickon' : lists[Bindex][Sindex].status === 'clickon'}"
-        >{{Bindex}}</div>
-        <input type="text" v-if="list.status === 'clickon' " v-model="list.memo" />
-        <img
-          @click="trash(Bindex, Sindex)"
-          class="trash_img"
-          v-if="list.status === 'clickon'"
-          src="https://www.flaticon.com/premium-icon/icons/svg/484/484662.svg"
-        />
-      </div>
+      <span
+        class="list"
+        v-for="(block, Sindex) in list"
+        :key="(Bindex, Sindex)"
+        @dbclick="click(Bindex, Sindex)"
+        :class="{'clickon' : lists[Bindex][Sindex].status === 'clickon'}"
+      >{{Bindex}}, {{Sindex}}</span>
     </div>
+
+    <!-- <input type="text" v-if="list.status === 'clickon' " v-model="list.memo" />
+    <img
+      @click="trash(Bindex, Sindex)"
+      class="trash_img"
+      v-if="list.status === 'clickon'"
+      src="https://www.flaticon.com/premium-icon/icons/svg/484/484662.svg"
+    />-->
   </div>
 </template>
 
@@ -38,7 +40,7 @@ export default {
   },
   methods: {
     click: function(Bindex, Sindex) {
-      console.log("전달됨");
+      console.log(Bindex, Sindex);
       if (this.lists[Bindex][Sindex].status === "not_click") {
         this.lists[Bindex][Sindex].status = "clickon";
       } else {
