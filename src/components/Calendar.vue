@@ -82,29 +82,28 @@ export default {
       );
       // console.log(this.currentMonthStartWeekIndex)
       this.endOfDay = this.getEndOfDay(this.currentYear, this.currentMonth);
+      this.LastMonthendOfDay = this.getEndOfDay(this.currentYear, this.currentMonth-1);
       this.initCalendar();
     },
     initCalendar: function() {
       this.currentCalendarMatrix = [];
       let day = 1;
+      let last_month_day = String(new Date(this.currentYear, this.currentMonth - 1, this.LastMonthendOfDay));
+      last_month_day = last_month_day.split(" ")[2]
+      last_month_day = Number(last_month_day)
+
       for (let i = 0; i < 6; i++) {
-        // i -> 5로 해도 이번년은 상관 없음. but) 달력 원리를 몰라서 일단 놔둠
         let calendarRow = [];
         for (let j = 0; j < 7; j++) {
           if (i == 0 && j < this.currentMonthStartWeekIndex) {
             // 첫 주에 첫번째 날, 요일 전에는 빈칸으로 채워 놓는다.
-            let LastMonthendOfDay = this.getEndOfDay(this.currentYear, this.currentMonth-1)
-            console.log(LastMonthendOfDay)
-            let day = String(new Date(this.currentYear, this.currentMonth - 1, LastMonthendOfDay-j));
-            day = day.split(" ")
-
-            
-            if(day[2] === '01')
-              day[2] = '31';
+            if(last_month_day === 1)
+              last_month_day = 31;
             calendarRow.unshift({
-              day : day[2],
+              day : last_month_day,
               class : "last_month"
             });
+            last_month_day--;
           } else if (day <= this.endOfDay) {
             // 해당 달의 끝까지 채워 놓는다.
             calendarRow.push({
