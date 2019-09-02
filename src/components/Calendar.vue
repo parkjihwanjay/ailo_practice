@@ -1,6 +1,10 @@
 
 <template>
   <div class="calendar">
+    <div>
+      <input type="radio" v-model="start_day" value="Sun" />일요일
+      <input type="radio" v-model="start_day" value="Mon" />월요일
+    </div>
     <h2>
       <a href="#" v-on:click="onClickPrev(currentMonth)">◀</a>
       {{currentYear}}년 {{currentMonth}}월
@@ -49,6 +53,7 @@ export default {
         "금요일",
         "토요일"
       ],
+      start_day: "Sun",
       rootYear: 1904,
       rootDayOfWeekIndex: 4, // 2000년 1월 1일은 토요일
       currentYear: new Date().getFullYear(),
@@ -64,11 +69,17 @@ export default {
   mounted() {
     this.init();
   },
+  watch: {
+    start_day: function(start_day) {
+      this.init();
+    }
+  },
   methods: {
     init: function() {
       this.currentMonthStartWeekIndex = this.getStartWeek(
         this.currentYear,
-        this.currentMonth
+        this.currentMonth,
+        this.start_day
       );
       this.endOfDay = this.getEndOfDay(this.currentYear, this.currentMonth);
       this.initCalendar();
@@ -131,32 +142,39 @@ export default {
     },
     // 해당하는 년도의 해당 월의 첫번째 요일을 계산하는 함수
     // 박지환 버전
-    getStartWeek: function(targetYear, targetMonth) {
+    getStartWeek: function(targetYear, targetMonth, start_day) {
       // let now = new Date();
       let firstDate = String(new Date(targetYear, targetMonth - 1, 1));
       let firstDate_split = firstDate.split(" ");
       let startWeek = firstDate_split[0];
+
+      console.log(start_day);
+
+      if (start_day === "Sun") start_day = 0;
+      else if (start_day === "Mon") start_day = 1;
+      else start_day = -1;
+
       switch (startWeek) {
         case "Sun":
-          return 0;
+          return 0 + start_day;
           break;
         case "Mon":
-          return 1;
+          return 1 + start_day;
           break;
         case "Tue":
-          return 2;
+          return 2 + start_day;
           break;
         case "Wed":
-          return 3;
+          return 3 + start_day;
           break;
         case "Thu":
-          return 4;
+          return 4 + start_day;
           break;
         case "Fri":
-          return 5;
+          return 5 + start_day;
           break;
         case "Sat":
-          return 6;
+          return 6 + start_day;
           break;
 
         default:
