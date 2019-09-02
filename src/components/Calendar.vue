@@ -22,7 +22,7 @@
             v-for="(day, index2) in row"
             :key="index2"
             @click="plus(index, index2)"
-            :class="{ 'clicked' : day.status === 'clicked'}"
+            :class="{ 'clicked' : day.status === 'clicked', 'last_month' : day.class === 'last_month'}"
           >
             <span :class="{rounded : isToday(currentYear, currentMonth, day.day)}">{{day.day}}</span>
             <div v-if="day.memo">{{day.memo}}</div>
@@ -40,6 +40,7 @@
 
 
 <script>
+import { log } from 'util';
 export default {
   name: "Calendar",
   data() {
@@ -54,8 +55,6 @@ export default {
         "토요일"
       ],
       start_day: "Sun",
-      rootYear: 1904,
-      rootDayOfWeekIndex: 4, // 2000년 1월 1일은 토요일
       currentYear: new Date().getFullYear(),
       currentMonth: new Date().getMonth() + 1,
       currentDay: new Date().getDate(),
@@ -81,6 +80,7 @@ export default {
         this.currentMonth,
         this.start_day
       );
+      // console.log(this.currentMonthStartWeekIndex)
       this.endOfDay = this.getEndOfDay(this.currentYear, this.currentMonth);
       this.initCalendar();
     },
@@ -93,7 +93,18 @@ export default {
         for (let j = 0; j < 7; j++) {
           if (i == 0 && j < this.currentMonthStartWeekIndex) {
             // 첫 주에 첫번째 날, 요일 전에는 빈칸으로 채워 놓는다.
-            calendarRow.push("");
+            let LastMonthendOfDay = this.getEndOfDay(this.currentYear, this.currentMonth-1)
+            console.log(LastMonthendOfDay)
+            let day = String(new Date(this.currentYear, this.currentMonth - 1, LastMonthendOfDay-j));
+            day = day.split(" ")
+
+            
+            if(day[2] === '01')
+              day[2] = '31';
+            calendarRow.unshift({
+              day : day[2],
+              class : "last_month"
+            });
           } else if (day <= this.endOfDay) {
             // 해당 달의 끝까지 채워 놓는다.
             calendarRow.push({
@@ -148,14 +159,43 @@ export default {
       let firstDate_split = firstDate.split(" ");
       let startWeek = firstDate_split[0];
 
-      console.log(start_day);
+      // console.log(start_day);
 
-      if (start_day === "Sun") start_day = 0;
-      else if (start_day === "Mon") start_day = 1;
-      else start_day = -1;
+      if (start_day === "Sun"){
+        start_day = 0;
+        this.weekNames = [
+        "일요일",
+        "월요일",
+        "화요일",
+        "수요일",
+        "목요일",
+        "금요일",
+        "토요일"
+      ];
+      }
+      else if (start_day === "Mon"){
+        start_day = -1;
+        this.weekNames = [
+        "월요일",
+        "화요일",
+        "수요일",
+        "목요일",
+        "금요일",
+        "토요일",        
+        "일요일",
+      ];
+      
+      }
+      else
+      {
+        return alert('다시 입력해주세요')
+      }
 
-      switch (startWeek) {
+      switch (
+        startWeek) {
         case "Sun":
+          if(start_day === -1)
+            return 6;
           return 0 + start_day;
           break;
         case "Mon":
@@ -276,6 +316,9 @@ export default {
   background-color: red;
 }
 
+.last_month{
+  color : gray;
+}
 a {
   text-decoration: none;
 }
