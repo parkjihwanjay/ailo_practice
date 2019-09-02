@@ -89,20 +89,21 @@ export default {
       this.currentCalendarMatrix = [];
       let day = 1;
       let last_month_day = String(new Date(this.currentYear, this.currentMonth - 1, this.LastMonthendOfDay));
-      last_month_day = last_month_day.split(" ")[2]
-      last_month_day = Number(last_month_day)
+      last_month_day = Number(last_month_day.split(" ")[2])
 
       for (let i = 0; i < 6; i++) {
         let calendarRow = [];
         for (let j = 0; j < 7; j++) {
           if (i == 0 && j < this.currentMonthStartWeekIndex) {
-            // 첫 주에 첫번째 날, 요일 전에는 빈칸으로 채워 놓는다.
+            // 첫 주에 첫번째 날, 요일 전에는 그 전달 날짜로 채워 놓는다.
             if(last_month_day === 1)
               last_month_day = 31;
+
             calendarRow.unshift({
               day : last_month_day,
               class : "last_month"
             });
+
             last_month_day--;
           } else if (day <= this.endOfDay) {
             // 해당 달의 끝까지 채워 놓는다.
@@ -110,7 +111,9 @@ export default {
               day: day,
               status: "not_click"
             });
+
             day++;
+            
           } else {
             // 해당 달의 일수를 넘기면 빈칸으로 채워 놓는다.
             calendarRow.push("");
