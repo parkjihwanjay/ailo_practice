@@ -12,7 +12,8 @@ export default {
   data() {
     return {
       start_date: "",
-      Dday: ""
+      Dday: "",
+      today: ""
     };
   },
   watch: {
@@ -30,6 +31,7 @@ export default {
     }
   },
   methods: {
+    // start_date와 finish_date 사이의 Dday를 구하는 함수
     getDday(start_date, finish_date) {
       let start_date_day = new Date(start_date);
       let finish_date_day = new Date(finish_date);
@@ -37,16 +39,11 @@ export default {
       let diff = Math.abs(finish_date_day.getTime() - start_date_day.getTime());
       diff = Math.ceil(diff / (1000 * 3600 * 24));
 
-      console.log(diff);
-
       return diff;
     }
   },
-  computed: {
-    today: function() {
-      let today = new Date();
-      return today;
-    }
+  created: function() {
+    this.today = new Date();
   }
 };
 </script>

@@ -17,12 +17,10 @@
           <td
             v-for="(day, index2) in row"
             :key="index2"
-            style="padding:20px;"
             @click="plus(index, index2)"
             :class="{ 'clicked' : day.status === 'clicked'}"
           >
-            <span v-if="isToday(currentYear, currentMonth, day.day)" class="rounded">{{day.day}}</span>
-            <span v-else>{{day.day}}</span>
+            <span :class="{rounded : isToday(currentYear, currentMonth, day.day)}">{{day.day}}</span>
             <div v-if="day.memo">{{day.memo}}</div>
           </td>
         </tr>
@@ -36,7 +34,6 @@
   </div>
 </template>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 <script>
 export default {
@@ -44,13 +41,13 @@ export default {
   data() {
     return {
       weekNames: [
+        "일요일",
         "월요일",
         "화요일",
         "수요일",
         "목요일",
         "금요일",
-        "토요일",
-        "일요일"
+        "토요일"
       ],
       rootYear: 1904,
       rootDayOfWeekIndex: 4, // 2000년 1월 1일은 토요일
@@ -80,23 +77,28 @@ export default {
       this.currentCalendarMatrix = [];
       let day = 1;
       for (let i = 0; i < 6; i++) {
+        // i -> 5로 해도 이번년은 상관 없음. but) 달력 원리를 몰라서 일단 놔둠
         let calendarRow = [];
         for (let j = 0; j < 7; j++) {
           if (i == 0 && j < this.currentMonthStartWeekIndex) {
+            // 첫 주에 첫번째 날, 요일 전에는 빈칸으로 채워 놓는다.
             calendarRow.push("");
           } else if (day <= this.endOfDay) {
+            // 해당 달의 끝까지 채워 놓는다.
             calendarRow.push({
               day: day,
               status: "not_click"
             });
             day++;
           } else {
+            // 해당 달의 일수를 넘기면 빈칸으로 채워 놓는다.
             calendarRow.push("");
           }
         }
         this.currentCalendarMatrix.push(calendarRow);
       }
     },
+    // getEndOfDay : 그 달의 일수 계산
     getEndOfDay: function(year, month) {
       switch (month) {
         case 1:
@@ -127,26 +129,66 @@ export default {
           break;
       }
     },
+    // 해당하는 년도의 해당 월의 첫번째 요일을 계산하는 함수
+    // 박지환 버전
     getStartWeek: function(targetYear, targetMonth) {
-      let year = this.rootYear;
-      let month = 1;
-      let sumOfDay = this.rootDayOfWeekIndex;
-      while (true) {
-        if (targetYear > year) {
-          for (let i = 0; i < 12; i++) {
-            sumOfDay += this.getEndOfDay(year, month + i);
-          }
-          year++;
-        } else if (targetYear == year) {
-          if (targetMonth > month) {
-            sumOfDay += this.getEndOfDay(year, month);
-            month++;
-          } else if (targetMonth == month) {
-            return sumOfDay % 7;
-          }
-        }
+      // let now = new Date();
+      let firstDate = String(new Date(targetYear, targetMonth - 1, 1));
+      let firstDate_split = firstDate.split(" ");
+      let startWeek = firstDate_split[0];
+      switch (startWeek) {
+        case "Sun":
+          return 0;
+          break;
+        case "Mon":
+          return 1;
+          break;
+        case "Tue":
+          return 2;
+          break;
+        case "Wed":
+          return 3;
+          break;
+        case "Thu":
+          return 4;
+          break;
+        case "Fri":
+          return 5;
+          break;
+        case "Sat":
+          return 6;
+          break;
+
+        default:
+          alert("unknown week");
+          this.currentMonthStartWeekIndex = -1;
+          break;
       }
     },
+
+    // 구글링 버전
+    // getStartWeek: function(targetYear, targetMonth) {
+    //   let year = this.rootYear;
+    //   let month = 1;
+    //   let sumOfDay = this.rootDayOfWeekIndex;
+    //   while (true) {
+    //     if (targetYear > year) {
+    //       for (let i = 0; i < 12; i++) {
+    //         sumOfDay += this.getEndOfDay(year, month + i);
+    //       }
+    //       year++;
+    //     } else if (targetYear == year) {
+    //       if (targetMonth > month) {
+    //         sumOfDay += this.getEndOfDay(year, month);
+    //         month++;
+    //       } else if (targetMonth == month) {
+    //         return sumOfDay % 7;
+    //       }
+    //     }
+    //   }
+    // },
+
+    //전달 가기 눌렀을 때
     onClickPrev: function(month) {
       month--;
       if (month <= 0) {
@@ -157,6 +199,8 @@ export default {
       }
       this.init();
     },
+
+    // 다음 달 가기 눌렀을 때
     onClickNext: function(month) {
       month++;
       if (month > 12) {
@@ -167,6 +211,7 @@ export default {
       }
       this.init();
     },
+    // 달력에서 오늘을 확인하기 위한 함수
     isToday: function(year, month, day) {
       let date = new Date();
       return (
@@ -175,6 +220,8 @@ export default {
         day == date.getDate()
       );
     },
+
+    // 달력에서 해당 날을 선탰했을 때 함수
     plus: function(row, col) {
       let current_status = this.currentCalendarMatrix[row][col].status;
 
@@ -196,6 +243,9 @@ export default {
 </script>
 
 <style type="text/css">
+.calendar {
+  margin-top: 50px;
+}
 .rounded {
   -moz-border-radius: 20px 20px 20px 20px;
   border-radius: 20px 20px 20px 20px;
@@ -206,6 +256,20 @@ export default {
 }
 .clicked {
   background-color: red;
+}
+
+a {
+  text-decoration: none;
+}
+
+thead tr td {
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+}
+
+tbody tr td {
+  border-top: 1px solid #ddd;
+  padding: 20px;
 }
 </style>
 

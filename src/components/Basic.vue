@@ -3,26 +3,10 @@
     <div>다이어리 만들기</div>
     <div>섹션</div>
 
-    <div v-for="element in basic_customizing.section" :key="element.name">
-      <input type="checkbox" :name="element.name" v-model="element.checked" />
-      <label :for="element">{{element.name}}</label>
+    <div v-for="section in basic_customizing.section" :key="section.name">
+      <input type="checkbox" :name="section.name" v-model="section.checked" />
+      <label :for="section">{{section.name}}</label>
     </div>
-
-    <!-- <input type="checkbox" name="section1" v-model="basic_customizing.section[0].checked" />
-    <label :for="basic_customizing.section[0]">{{basic_customizing.section[0].name}}</label>
-    <br />
-    <input type="checkbox" name="section2" v-model="basic_customizing.section[1].checked" />
-    <label :for="basic_customizing.section[1]">{{basic_customizing.section[1].name}}</label>
-    <br />
-    <input type="checkbox" name="section3" v-model="basic_customizing.section[2].checked" />
-    <label :for="basic_customizing.section[2]">{{basic_customizing.section[2].name}}</label>
-    <br />
-    <input type="checkbox" name="section4" v-model="basic_customizing.section[3].checked" />
-    <label :for="basic_customizing.section[3]">{{basic_customizing.section[3].name}}</label>
-    <br />
-    <input type="checkbox" name="section5" v-model="basic_customizing.section[4].checked" />
-    <label :for="basic_customizing.section[4]">{{basic_customizing.section[4].name}}</label>
-    <br />-->
 
     <div>배열</div>
     <input type="radio" name="array" v-model="basic_customizing.array" value="M-D-M-D" />M-D-M-D
@@ -42,42 +26,6 @@
       <input type="checkbox" :name="element.name" v-model="element.checked" />
       <label :for="element.name">{{element.name}}</label>
     </div>
-
-    <!-- <input
-      type="checkbox"
-      name="basic_component"
-      v-model="basic_customizing.basic_component[0].checked"
-    />
-    <label :for="basic_customizing.basic_component[0]">{{basic_customizing.basic_component[0].name}}</label>
-    <br />
-    <input
-      type="checkbox"
-      name="basic_component"
-      v-model="basic_customizing.basic_component[1].checked"
-    />
-    <label :for="basic_customizing.basic_component[1]">{{basic_customizing.basic_component[1].name}}</label>
-    <br />
-    <input
-      type="checkbox"
-      name="basic_component"
-      v-model="basic_customizing.basic_component[2].checked"
-    />
-    <label :for="basic_customizing.basic_component[2]">{{basic_customizing.basic_component[2].name}}</label>
-    <br />
-    <input
-      type="checkbox"
-      name="basic_component"
-      v-model="basic_customizing.basic_component[3].checked"
-    />
-    <label :for="basic_customizing.basic_component[3]">{{basic_customizing.basic_component[3].name}}</label>
-    <br />
-    <input
-      type="checkbox"
-      name="basic_component"
-      v-model="basic_customizing.basic_component[4].checked"
-    />
-    <label :for="basic_customizing.basic_component[4]">{{basic_customizing.basic_component[4].name}}</label>
-    <br />-->
 
     <input type="button" value="적용하기" @click="show_basic_customizing" />
   </div>
@@ -157,7 +105,7 @@ export default {
       }
     },
     "basic_customizing.date_from": function(date_from) {
-      console.log(date_from);
+      // console.log(date_from);
       if (this.basic_customizing.date_to != "") {
         if (this.basic_customizing.date_to < date_from) {
           alert("시작 날짜가 끝나는 날짜보다 늦습니다. 다시 선택해주세요");
