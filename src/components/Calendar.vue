@@ -68,9 +68,20 @@ export default {
   mounted() {
     this.init();
   },
+  computed : {
+    last_month_day : function(){
+
+    }
+  },
+  // 요일을 바꿔을 때 실행
   watch: {
     start_day: function(start_day) {
-      this.init();
+      this.currentMonthStartWeekIndex = this.getStartWeek(
+        this.currentYear,
+        this.currentMonth,
+        this.start_day
+      );
+      this.initCalendar();
     }
   },
   methods: {
@@ -90,37 +101,42 @@ export default {
       let day = 1;
       let last_month_day = String(new Date(this.currentYear, this.currentMonth - 1, this.LastMonthendOfDay));
       last_month_day = Number(last_month_day.split(" ")[2])
-
-      for (let i = 0; i < 6; i++) {
+      this.currentCalendarMatrix = this.fillCalendar(day, last_month_day)
+    },
+    fillCalendar : function(day, last_month_day)
+    {
+        let currentCalendarMatrix = []
+        for (let i = 0; i < 6; i++) {
         let calendarRow = [];
-        for (let j = 0; j < 7; j++) {
-          if (i == 0 && j < this.currentMonthStartWeekIndex) {
-            // 첫 주에 첫번째 날, 요일 전에는 그 전달 날짜로 채워 놓는다.
-            if(last_month_day === 1)
-              last_month_day = 31;
+          for (let j = 0; j < 7; j++) {
+            if (i == 0 && j < this.currentMonthStartWeekIndex) {
+              // 첫 주에 첫번째 날, 요일 전에는 그 전달 날짜로 채워 놓는다.
+              if(last_month_day === 1)
+                last_month_day = 31;
 
-            calendarRow.unshift({
-              day : last_month_day,
-              class : "last_month"
-            });
+              calendarRow.unshift({
+                day : last_month_day,
+                class : "last_month"
+              });
 
-            last_month_day--;
-          } else if (day <= this.endOfDay) {
-            // 해당 달의 끝까지 채워 놓는다.
-            calendarRow.push({
-              day: day,
-              status: "not_click"
-            });
+              last_month_day--;
+            } else if (day <= this.endOfDay) {
+              // 해당 달의 끝까지 채워 놓는다.
+              calendarRow.push({
+                day: day,
+                status: "not_click"
+              });
 
-            day++;
-            
-          } else {
-            // 해당 달의 일수를 넘기면 빈칸으로 채워 놓는다.
-            calendarRow.push("");
+              day++;
+              
+            } else {
+              // 해당 달의 일수를 넘기면 빈칸으로 채워 놓는다.
+              calendarRow.push("");
+            }
           }
+          currentCalendarMatrix.push(calendarRow);
         }
-        this.currentCalendarMatrix.push(calendarRow);
-      }
+        return currentCalendarMatrix;
     },
     // getEndOfDay : 그 달의 일수 계산
     getEndOfDay: function(year, month) {
