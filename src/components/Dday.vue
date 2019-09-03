@@ -12,21 +12,33 @@ export default {
   data() {
     return {
       start_date: "",
-      Dday: "",
       today: ""
     };
   },
-  watch: {
-    start_date: function(start_date) {
-      //   console.log(start_date);
-      let Dday = 0;
-      start_date = new Date(start_date);
-      if (start_date < this.today) {
-        Dday = this.getDday(start_date, this.today);
-        this.Dday = "+" + Dday;
-      } else {
-        Dday = this.getDday(this.today, start_date);
-        this.Dday = "-" + Dday;
+  computed : {
+    Dday : function(){
+      let start_date = this.start_date
+      
+      if(start_date === "")
+        return ""
+      else
+      {
+        let Dday = 0;
+        let today = this.today;
+
+        start_date = new Date(start_date)
+        
+        if(start_date < today)
+        {
+          Dday = "+" + (this.getDday(start_date, today)-1)
+        }
+
+        else
+        {
+          Dday = "-" + this.getDday(today, start_date);
+        }
+
+        return Dday;
       }
     }
   },
