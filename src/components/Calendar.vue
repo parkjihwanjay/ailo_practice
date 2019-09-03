@@ -70,7 +70,14 @@ export default {
   },
   computed : {
     last_month_day : function(){
+      let last_month_day = String(new Date(this.currentYear, this.currentMonth - 1, this.LastMonthendOfDay));
+      last_month_day = Number(last_month_day.split(" ")[2])
 
+      return last_month_day;
+    },
+
+    first_day : function(){
+      return 1;
     }
   },
   // 요일을 바꿔을 때 실행
@@ -82,7 +89,7 @@ export default {
         this.start_day
       );
       this.initCalendar();
-    }
+      }
   },
   methods: {
     init: function() {
@@ -97,14 +104,11 @@ export default {
       this.initCalendar();
     },
     initCalendar: function() {
-      this.currentCalendarMatrix = [];
-      let day = 1;
-      let last_month_day = String(new Date(this.currentYear, this.currentMonth - 1, this.LastMonthendOfDay));
-      last_month_day = Number(last_month_day.split(" ")[2])
-      this.currentCalendarMatrix = this.fillCalendar(day, last_month_day)
+      this.currentCalendarMatrix = this.fillCalendar(this.first_day, this.last_month_day)
     },
     fillCalendar : function(day, last_month_day)
     {
+        
         let currentCalendarMatrix = []
         for (let i = 0; i < 6; i++) {
         let calendarRow = [];
