@@ -7,7 +7,9 @@
       
         <tr v-for="(one_hour, hindex) in one_day_planner" :key=hindex>
           {{hindex}}
-          <td @mousedown="mouseDown(hindex, mindex)" @mouseup="mouseUp(hindex, mindex)"
+          <td @mousedown="mouseDown(hindex, mindex)"
+              @mouseover="mouseOver(hindex, mindex, $event)"
+              @mouseup="mouseUp(hindex, mindex)"
               class="border" 
               v-for="(ten_minute, mindex) in one_hour"
               :id = ten_minute.id
@@ -25,6 +27,7 @@
 </template>
 
 <script>
+import { debuglog } from 'util';
 
 export default {
   data()
@@ -78,15 +81,71 @@ export default {
     }
   },
   methods : {
+    mouseUp(hindex, mindex){
+      if(hindex === this.color[this.color.length-1]['start_index'][0] && mindex === this.color[this.color.length-1]['start_index'][1])
+      {
+        this.color[this.color.length-1]['finish_index'] = [hindex, mindex]
+
+        let start_index = this.color[this.color.length-1]['start_index']
+        let finish_index = this.color[this.color.length-1]['finish_index']
+
+        this.colorPlanner(start_index, finish_index)
+      }
+      this.color_index++;
+    },
     mouseDown(hindex, mindex){
+      document.getElementById(hindex + '_' + mindex).style.backgroundColor = 'red'
       this.color.push({
         "start_index" : [hindex, mindex]
       })
     },
-    mouseUp(hindex, mindex){
+    mouseOver(hindex, mindex, event)
+    {
+      if(event.which === 1)
+      {
+        if(this.color[this.color.length-1]['finish_index'])
+        {
+            let finish_hindex = this.color[this.color.length-1]['finish_index'][0];
+            let finish_mindex = this.color[this.color.length-1]['finish_index'][1];
+
+            if(finish_hindex > hindex || finish_mindex > mindex)
+            {
+              let start_index = this.color[this.color.length-1]['start_index']
+              let finish_index = this.color[this.color.length-1]['finish_index']
+
+              this.deletePlanner(start_index, finish_index)
+            }
+        }
+        
       this.color[this.color.length-1]['finish_index'] = [hindex, mindex]
-      this.colorPlanner();
-      
+
+      let start_index = this.color[this.color.length-1]['start_index']
+      let finish_index = this.color[this.color.length-1]['finish_index']
+
+      this.colorPlanner(start_index, finish_index);
+      }
+    },
+    deletePlanner(start_index, finish_index)
+    {
+      let start_x = start_index[0]
+      let start_y = start_index[1]
+
+      let end_x = finish_index[0]
+      let end_y = finish_index[1]
+
+      while(1)
+      {
+        for(let i=start_y; i<=5; i++)
+        {
+            
+          document.getElementById(start_x + '_' + i).style.backgroundColor = 'white';
+
+          if(start_x === end_x && i === end_y)
+            return;
+        }
+        start_y = 0;
+        start_x++;
+      }
     },
     deleteColor(color_index)
     {   
@@ -97,21 +156,23 @@ export default {
         elements[i].style.backgroundColor = 'white'
       }
     },
-    colorPlanner()
+    colorPlanner(start_index, finish_index)
     {
-      this.color_index++; 
-      let start_x = this.color[this.color.length-1]['start_index'][0]
-      let start_y = this.color[this.color.length-1]['start_index'][1]
+     let start_x = start_index[0]
+     let start_y = start_index[1]
 
-      let end_x = this.color[this.color.length-1]['finish_index'][0]
-      let end_y = this.color[this.color.length-1]['finish_index'][1]
+     let end_x = finish_index[0]
+     let end_y = finish_index[1]
 
+     let temp_index = this.color_index + 1
       while(1)
       {
+
         for(let i=start_y; i<=5; i++)
         {
+          
           document.getElementById(start_x + '_' + i).style.backgroundColor = 'red';
-          document.getElementById(start_x + '_' + i).className = 'colored_' + this.color_index;
+          document.getElementById(start_x + '_' + i).className = 'colored_' + temp_index;
 
           if(start_x === end_x && i === end_y)
             return;
@@ -124,7 +185,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 tr td{
   border: 1px solid black;
   empty-cells: show;

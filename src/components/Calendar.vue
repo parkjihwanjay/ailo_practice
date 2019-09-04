@@ -322,7 +322,7 @@ export default {
 };
 </script>
 
-<style type="text/css">
+<style scoped>
 .calendar {
   margin-top: 50px;
 }
