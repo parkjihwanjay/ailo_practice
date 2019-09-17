@@ -62,9 +62,7 @@ export default {
 
 			while (1) {
 				for (let i = start_y; i <= 5; i++) {
-					document.getElementById(
-						start_x + '_' + i,
-					).style.backgroundColor = color;
+					document.getElementById(start_x + '_' + i).style.backgroundColor = color;
 
 					if (start_x === end_x && i === end_y) return;
 				}
@@ -82,9 +80,7 @@ export default {
 				this.color.splice(this.color.length - 1, 1);
 				// this.plannerList.splice(this.color.length - 1, 1);
 				return;
-			} else if (
-				this.color[this.color.length - 1]['start_index'][0] === hindex
-			) {
+			} else if (this.color[this.color.length - 1]['start_index'][0] === hindex) {
 				if (this.color[this.color.length - 1]['start_index'][1] > mindex) {
 					document.getElementById(
 						this.color[this.color.length - 1]['start_index'][0] +
@@ -101,14 +97,10 @@ export default {
 				if (!this.color[this.color.length - 1]['finish_index'])
 					this.color[this.color.length - 1]['finish_index'] = [hindex, mindex];
 
-				let start_hindex =
-					this.color[this.color.length - 1]['start_index'][0] + 1;
-				let start_mindex =
-					(this.color[this.color.length - 1]['start_index'][1] + 1) * 10;
-				let finish_hindex =
-					this.color[this.color.length - 1]['finish_index'][0] + 1;
-				let finish_mindex =
-					(this.color[this.color.length - 1]['finish_index'][1] + 1) * 10;
+				let start_hindex = this.color[this.color.length - 1]['start_index'][0] + 1;
+				let start_mindex = (this.color[this.color.length - 1]['start_index'][1] + 1) * 10;
+				let finish_hindex = this.color[this.color.length - 1]['finish_index'][0] + 1;
+				let finish_mindex = (this.color[this.color.length - 1]['finish_index'][1] + 1) * 10;
 
 				this.coloringClass(
 					this.color[this.color.length - 1]['start_index'],
@@ -144,10 +136,8 @@ export default {
 		},
 		mouseDown(hindex, mindex, event) {
 			if (event.target.className !== 'colored') {
-				document.getElementById(hindex + '_' + mindex).style.backgroundColor =
-					'red';
-				document.getElementById(hindex + '_' + mindex).style.className =
-					'colored';
+				document.getElementById(hindex + '_' + mindex).style.backgroundColor = 'red';
+				document.getElementById(hindex + '_' + mindex).style.className = 'colored';
 				this.color.push({
 					start_index: [hindex, mindex],
 				});
@@ -155,22 +145,14 @@ export default {
 		},
 		mouseOver(hindex, mindex, event) {
 			if (event.which === 1) {
-				if (this.color[this.color.length - 1]['start_index'][0] > hindex)
-					return;
-				else if (
-					this.color[this.color.length - 1]['start_index'][0] === hindex
-				) {
-					if (this.color[this.color.length - 1]['start_index'][1] > mindex)
-						return;
+				if (this.color[this.color.length - 1]['start_index'][0] > hindex) return;
+				else if (this.color[this.color.length - 1]['start_index'][0] === hindex) {
+					if (this.color[this.color.length - 1]['start_index'][1] > mindex) return;
 				}
 
 				if (this.color[this.color.length - 1]['finish_index']) {
-					let finish_hindex = this.color[this.color.length - 1][
-						'finish_index'
-					][0];
-					let finish_mindex = this.color[this.color.length - 1][
-						'finish_index'
-					][1];
+					let finish_hindex = this.color[this.color.length - 1]['finish_index'][0];
+					let finish_mindex = this.color[this.color.length - 1]['finish_index'][1];
 
 					if (finish_hindex > hindex || finish_mindex > mindex) {
 						if (event.target.className !== 'colored') this.deleteColorOver();
