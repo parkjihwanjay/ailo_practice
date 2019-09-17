@@ -77,7 +77,6 @@ export default {
 						).style.backgroundColor = 'white';
 						this.color.splice(this.color.length - 1, 1);
 						this.click = 0;
-						// this.plannerList.splice(this.color.length - 1, 1);
 						return;
 					} else if (this.color[this.color.length - 1]['start_index'][0] === hindex) {
 						if (this.color[this.color.length - 1]['start_index'][1] > mindex) {
@@ -88,7 +87,6 @@ export default {
 							).style.backgroundColor = 'white';
 							this.color.splice(this.color.length - 1, 1);
 							this.click = 0;
-							// this.plannerList.splice(this.color.length - 1, 1);
 							return;
 						}
 					}
@@ -121,12 +119,6 @@ export default {
 		MouseOver(hindex, mindex, event) {
 			if (event.target.className) return;
 			if (this.click === 1) {
-				// if (event.target.className === 'colored') {
-				// 	alert('겹치면 안됩니다');
-				// 	this.deleteColorOver();
-				// 	this.click = 0;
-				// 	return;
-				// }
 				if (this.color[this.color.length - 1]['start_index'][0] > hindex) {
 					return;
 				} else if (this.color[this.color.length - 1]['start_index'][0] === hindex) {
@@ -190,7 +182,7 @@ export default {
 			while (1) {
 				for (let i = start_y; i <= 5; i++) {
 					document.getElementById(start_x + '_' + i).style.backgroundColor = color;
-
+					document.getElementById(start_x + '_' + i).className = '';
 					if (start_x === end_x && i === end_y) return;
 				}
 				start_y = 0;

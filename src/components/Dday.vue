@@ -25,8 +25,7 @@ export default {
 
 				startDate = new Date(startDate);
 
-				if (startDate < this.today)
-					Dday = '+' + (this.getDday(startDate, this.today) - 1);
+				if (startDate < this.today) Dday = '+' + (this.getDday(startDate, this.today) - 1);
 				else Dday = '-' + this.getDday(this.today, startDate);
 
 				return Dday;
