@@ -10,9 +10,9 @@
 		</div>
 
 		<h2>
-			<a href="#" v-on:click="onClickPrev(currentMonth)">◀</a>
+			<a href="#" @click.prevent="onClickPrev(currentMonth)">◀</a>
 			{{ currentYear }}년 {{ currentMonth }}월
-			<a href="#" v-on:click="onClickNext(currentMonth)">▶</a>
+			<a href="#" @click.prevent="onClickNext(currentMonth)">▶</a>
 			<!-- 수정 필요 -->
 		</h2>
 
@@ -32,10 +32,9 @@
 						:key="index2"
 						:class="{ last_month: day.class === 'last_month' }"
 					>
-						<span
-							:class="{ rounded: isToday(currentYear, currentMonth, day.day) }"
-							>{{ day.day }}</span
-						>
+						<span :class="{ rounded: isToday(currentYear, currentMonth, day.day) }">{{
+							day.day
+						}}</span>
 					</td>
 				</tr>
 			</tbody>
@@ -49,15 +48,7 @@ export default {
 	name: 'Calendar',
 	data() {
 		return {
-			weekNames: [
-				'일요일',
-				'월요일',
-				'화요일',
-				'수요일',
-				'목요일',
-				'금요일',
-				'토요일',
-			],
+			weekNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
 			// 기본 시작일은 일요일
 			start_day: 'Sun',
 			first_day: 1,
@@ -96,19 +87,12 @@ export default {
 
 			if (this.currentMonth === 1)
 				this.LastMonthendOfDay = this.getEndOfDay(this.currentYear - 1, 12);
-			else
-				this.LastMonthendOfDay = this.getEndOfDay(
-					this.currentYear,
-					this.currentMonth - 1,
-				);
+			else this.LastMonthendOfDay = this.getEndOfDay(this.currentYear, this.currentMonth - 1);
 
 			this.initCalendar();
 		},
 		initCalendar: function() {
-			this.currentCalendarMatrix = this.fillCalendar(
-				this.first_day,
-				this.LastMonthendOfDay,
-			);
+			this.currentCalendarMatrix = this.fillCalendar(this.first_day, this.LastMonthendOfDay);
 		},
 		// 해당 월에 해당하는 2차원 배열의 달력을 만듬
 		fillCalendar: function(day, LastMonthendOfDay) {
@@ -184,26 +168,10 @@ export default {
 
 			if (start_day === 'Sun') {
 				start_day = 0;
-				this.weekNames = [
-					'일요일',
-					'월요일',
-					'화요일',
-					'수요일',
-					'목요일',
-					'금요일',
-					'토요일',
-				];
+				this.weekNames = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 			} else if (start_day === 'Mon') {
 				start_day = -1;
-				this.weekNames = [
-					'월요일',
-					'화요일',
-					'수요일',
-					'목요일',
-					'금요일',
-					'토요일',
-					'일요일',
-				];
+				this.weekNames = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
 			} else {
 				return alert('다시 입력해주세요');
 			}

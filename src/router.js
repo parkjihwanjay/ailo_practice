@@ -8,6 +8,14 @@ import Basic from './components/Basic.vue';
 import Dday from './components/Dday.vue';
 import Calendar from './components/Calendar.vue';
 import PlannerClick from './components/PlannerClick.vue';
+
+import PlannerClickCopy from './components/PlannerClickCopy.vue';
+
+import AccountBook from './경연/AccountBook.vue';
+import Habit from './경연/Habit.vue';
+import PhotoAlbum from './경연/PhotoAlbum.vue';
+import TodoList from './경연/TodoList.vue';
+
 Vue.use(Router);
 
 export default new Router({
@@ -43,6 +51,31 @@ export default new Router({
 			path: '/PlannerClick',
 			name: 'PlannerClick',
 			component: PlannerClick,
+		},
+		{
+			path: '/PlannerClickCopy',
+			name: 'PlannerClickCopy',
+			component: PlannerClickCopy,
+		},
+		{
+			path: '/AccountBook',
+			name: 'AccountBook',
+			component: AccountBook,
+		},
+		{
+			path: '/Habit',
+			name: 'Habit',
+			component: Habit,
+		},
+		{
+			path: '/PhotoAlbum',
+			name: 'PhotoAlbum',
+			component: PhotoAlbum,
+		},
+		{
+			path: '/TodoList',
+			name: 'TodoList',
+			component: TodoList,
 		},
 	],
 });

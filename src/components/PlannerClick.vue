@@ -1,11 +1,18 @@
+/* eslint-disable prettier/prettier */
 <template>
 	<div>
+		<select name="color" v-model="selectColor">
+			<option disabled value="">색깔을 골라주세요</option>
+			<option v-for="(color, index) in candidateColors" :key="index" :value="color">{{
+				color
+			}}</option>
+		</select>
 		<table>
 			<tr>
 				<th v-for="minitue in minitues" :key="minitue">{{ minitue }}</th>
 			</tr>
 
-			<tr v-for="(one_hour, hindex) in one_day_planner" :key="hindex">
+			<tr v-for="(one_hour, hindex) in oneDayPlanner" :key="hindex">
 				{{
 					hindex
 				}}
@@ -36,57 +43,48 @@ export default {
 	data() {
 		return {
 			minitues: ['10', '20', '30', '40', '50', '60'],
-			one_day_planner: [],
+			oneDayPlanner: [],
 			color: [],
 			plannerList: [],
 			click: 0,
+			selectColor: '',
+			candidateColors: ['red', 'green', 'blue', 'pink'],
 		};
 	},
 	created: function() {
 		for (let i = 0; i < 22; i++) {
-			this.one_day_planner[i] = new Array();
+			this.oneDayPlanner[i] = new Array();
 			for (let j = 0; j < this.minitues.length; j++) {
-				this.one_day_planner[i].push({
+				this.oneDayPlanner[i].push({
 					id: `${i}_${j}`,
 				});
 			}
 		}
 	},
 	methods: {
+		reduceCandidate() {
+			let index = this.candidateColors.indexOf(this.selectColor);
+			this.candidateColors.splice(index, 1);
+			this.selectColor = '';
+		},
 		Click(hindex, mindex, event) {
-			if (event.target.className !== 'colored') {
-				if (this.click === 0) {
-					document.getElementById(hindex + '_' + mindex).style.backgroundColor = 'red';
-					document.getElementById(hindex + '_' + mindex).style.className = 'colored';
-					this.color.push({
-						start_index: [hindex, mindex],
-					});
-				} else if (this.click === 1) {
-					if (event.target.className === 'colored') {
-						alert('겹치면 안됩니다');
-						this.deleteColorOver();
-						this.color.splice(this.color.length - 1, 1);
-						this.click = 0;
-						return;
-					}
+			if (!this.selectColor) return;
+
+			if (this.click === 0) {
+				event.target.style.backgroundColor = this.selectColor;
+				event.target.className = 'colored';
+
+				this.color.push({
+					start_index: [hindex, mindex],
+				});
+			} else if (this.click === 1) {
+				if (event.target.className !== 'colored') {
 					if (this.color[this.color.length - 1]['start_index'][0] > hindex) {
-						document.getElementById(
-							this.color[this.color.length - 1]['start_index'][0] +
-								'_' +
-								this.color[this.color.length - 1]['start_index'][1],
-						).style.backgroundColor = 'white';
-						this.color.splice(this.color.length - 1, 1);
-						this.click = 0;
+						this.ClickBefore();
 						return;
 					} else if (this.color[this.color.length - 1]['start_index'][0] === hindex) {
 						if (this.color[this.color.length - 1]['start_index'][1] > mindex) {
-							document.getElementById(
-								this.color[this.color.length - 1]['start_index'][0] +
-									'_' +
-									this.color[this.color.length - 1]['start_index'][1],
-							).style.backgroundColor = 'white';
-							this.color.splice(this.color.length - 1, 1);
-							this.click = 0;
+							this.ClickBefore();
 							return;
 						}
 					}
@@ -99,7 +97,7 @@ export default {
 					let finish_hindex = this.color[this.color.length - 1]['finish_index'][0] + 1;
 					let finish_mindex = (this.color[this.color.length - 1]['finish_index'][1] + 1) * 10;
 
-					this.coloringClass(
+					this.applyClass(
 						this.color[this.color.length - 1]['start_index'],
 						this.color[this.color.length - 1]['finish_index'],
 						'colored',
@@ -111,14 +109,38 @@ export default {
 						finish_index: this.color[this.color.length - 1]['finish_index'],
 						memo: '',
 					});
+					this.reduceCandidate();
+				} else {
+					if (this.click === 1) {
+						alert('겹치면 안됩니다');
+						this.deleteColorOver();
+						this.color.splice(this.color.length - 1, 1);
+						this.click = 0;
+						return;
+					}
 				}
-				this.click++;
-				if (this.click === 2) this.click = 0;
 			}
+			this.click++;
+			if (this.click === 2) this.click = 0;
+		},
+		ClickBefore() {
+			document.getElementById(
+				this.color[this.color.length - 1]['start_index'][0] +
+					'_' +
+					this.color[this.color.length - 1]['start_index'][1],
+			).style.backgroundColor = 'white';
+			this.color.splice(this.color.length - 1, 1);
+			this.click = 0;
 		},
 		MouseOver(hindex, mindex, event) {
-			if (event.target.className) return;
 			if (this.click === 1) {
+				if (event.target.className) {
+					alert('겹치면 안됩니다');
+					this.deleteColorOver();
+					this.color.splice(this.color.length - 1, 1);
+					this.click = 0;
+					return;
+				}
 				if (this.color[this.color.length - 1]['start_index'][0] > hindex) {
 					return;
 				} else if (this.color[this.color.length - 1]['start_index'][0] === hindex) {
@@ -144,10 +166,10 @@ export default {
 			this.coloring(
 				this.color[this.color.length - 1]['start_index'],
 				this.color[this.color.length - 1]['finish_index'],
-				'red',
+				this.selectColor,
 			);
 		},
-		coloring(start_index, finish_index, color) {
+		coloring(start_index, finish_index, color, Class) {
 			let start_x = start_index[0];
 			let start_y = start_index[1];
 
@@ -155,35 +177,25 @@ export default {
 			let end_y = finish_index[1];
 
 			while (1) {
-				for (let i = start_y; i <= 5; i++) {
-					if (
-						color === 'white' &&
-						document.getElementById(start_x + '_' + i).className === 'colored'
-					) {
-						// debugger;
-						continue;
+				if (Class) {
+					for (let i = start_y; i <= 5; i++) {
+						document.getElementById(start_x + '_' + i).style.backgroundColor = color;
+						document.getElementById(start_x + '_' + i).className = '';
+						if (start_x === end_x && i === end_y) return;
 					}
+				} else {
+					for (let i = start_y; i <= 5; i++) {
+						if (
+							color === 'white' &&
+							document.getElementById(start_x + '_' + i).className === 'colored'
+						) {
+							continue;
+						}
 
-					document.getElementById(start_x + '_' + i).style.backgroundColor = color;
+						document.getElementById(start_x + '_' + i).style.backgroundColor = color;
 
-					if (start_x === end_x && i === end_y) return;
-				}
-				start_y = 0;
-				start_x++;
-			}
-		},
-		coloring2(start_index, finish_index, color) {
-			let start_x = start_index[0];
-			let start_y = start_index[1];
-
-			let end_x = finish_index[0];
-			let end_y = finish_index[1];
-
-			while (1) {
-				for (let i = start_y; i <= 5; i++) {
-					document.getElementById(start_x + '_' + i).style.backgroundColor = color;
-					document.getElementById(start_x + '_' + i).className = '';
-					if (start_x === end_x && i === end_y) return;
+						if (start_x === end_x && i === end_y) return;
+					}
 				}
 				start_y = 0;
 				start_x++;
@@ -197,7 +209,6 @@ export default {
 					'white',
 				);
 			} else {
-				// debugger;
 				document.getElementById(
 					this.color[this.color.length - 1]['start_index'][0] +
 						'_' +
@@ -207,9 +218,15 @@ export default {
 		},
 		deleteColor(start_index, finish_index, index) {
 			this.plannerList.splice(index, 1);
-			this.coloring2(start_index, finish_index, 'white');
+			let color = document.getElementById(
+				this.color[this.color.length - 1]['start_index'][0] +
+					'_' +
+					this.color[this.color.length - 1]['start_index'][1],
+			).style.backgroundColor;
+			this.candidateColors.push(color);
+			this.coloring(start_index, finish_index, 'white', 'colored');
 		},
-		coloringClass(start_index, finish_index, string) {
+		applyClass(start_index, finish_index, string) {
 			let start_x = start_index[0];
 			let start_y = start_index[1];
 
