@@ -17,7 +17,7 @@
 				<router-link to="PlannerClick">PlannerClick</router-link>
 			</li>
 			<li>
-				<router-link to="AccountBook">AccountBook</router-link>
+				<router-link to="AccountBook-1">AccountBook-1</router-link>
 			</li>
 			<li>
 				<router-link to="Habit">Habit</router-link>
@@ -41,7 +41,7 @@ import Dday from '../components/Dday';
 import Calendar from '../components/Calendar';
 import PlannerClick from '../components/PlannerClick';
 
-import AccountBook from '../경연/AccountBook.vue';
+import AccountBook from '../경연/AccountBook-1.vue';
 import Habit from '../경연/Habit.vue';
 import PhotoAlbum from '../경연/PhotoAlbum.vue';
 import TodoList from '../경연/TodoList.vue';

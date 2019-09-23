@@ -11,6 +11,7 @@ import PlannerClick from './components/PlannerClick.vue';
 
 import PlannerClickCopy from './components/PlannerClickCopy.vue';
 
+import AccountBook_1 from './경연/AccountBook-1.vue';
 import AccountBook from './경연/AccountBook.vue';
 import Habit from './경연/Habit.vue';
 import PhotoAlbum from './경연/PhotoAlbum.vue';
@@ -56,6 +57,11 @@ export default new Router({
 			path: '/PlannerClickCopy',
 			name: 'PlannerClickCopy',
 			component: PlannerClickCopy,
+		},
+		{
+			path: '/AccountBook-1',
+			name: 'AccountBook-1',
+			component: AccountBook_1,
 		},
 		{
 			path: '/AccountBook',
