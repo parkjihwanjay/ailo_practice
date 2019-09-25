@@ -14,6 +14,7 @@ import PlannerClickCopy from './components/PlannerClickCopy.vue';
 import AccountBook_1 from './경연/AccountBook-1.vue';
 import AccountBook from './경연/AccountBook.vue';
 import Habit from './경연/Habit.vue';
+import Habit_1 from './경연/Habit-1.vue';
 import PhotoAlbum from './경연/PhotoAlbum.vue';
 import TodoList from './경연/TodoList.vue';
 
@@ -72,6 +73,11 @@ export default new Router({
 			path: '/Habit',
 			name: 'Habit',
 			component: Habit,
+		},
+		{
+			path: '/Habit-1',
+			name: 'Habit-1',
+			component: Habit_1,
 		},
 		{
 			path: '/PhotoAlbum',

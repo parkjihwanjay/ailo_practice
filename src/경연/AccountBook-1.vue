@@ -53,12 +53,11 @@
 						<td id="income-num" v-if="!info.incomeEditing" v-on:dblclick="edit(info, 'income')">
 							<!-- 숫자를 스트링으로 바꿈 -->
 							+
-							<p v-if="info.income">{{ Number(info.income).toLocaleString() }}</p>
+							<p v-if="info.income">{{ info.income }}</p>
 						</td>
 						<input
 							v-else
-							type="number"
-							v-model="info.income"
+							v-model.number="info.income"
 							v-on:blur="doneEdit(info, 'income')"
 							v-on:keyup.enter="doneEdit(info, 'income')"
 							v-on:keyup.esc="cancelEdit(info, 'income')"
@@ -68,12 +67,11 @@
 						<td id="expense-num" v-if="!info.expenseEditing" v-on:dblclick="edit(info, 'expense')">
 							<!-- 숫자를 스트링으로 바꿈 -->
 							-
-							<p v-if="info.expense">{{ Number(info.expense).toLocaleString() }}</p>
+							<p v-if="info.expense">{{ info.expense.toLocaleString() }}</p>
 						</td>
 						<input
-							type="number"
 							v-else
-							v-model="info.expense"
+							v-model.number="info.expense"
 							v-on:blur="doneEdit(info, 'expense')"
 							v-on:keyup.enter="doneEdit(info, 'expense')"
 							v-on:keyup.esc="cancelEdit(info, 'expense')"
@@ -87,16 +85,8 @@
 
 					<tr>
 						<td colspan="3" id="totals">합계</td>
-
-						<template name="totalIncome">
-							<td id="total-income" v-if="totalIncome === 'NaN'">+0</td>
-							<td id="total-income" v-else>+{{ totalIncome }}</td>
-						</template>
-
-						<template name="totalExpense">
-							<td id="total-expense" v-if="totalExpense === 'NaN'">-0</td>
-							<td id="total-expense" v-else>-{{ totalExpense }}</td>
-						</template>
+						<td id="total-income">+{{ totalIncome }}</td>
+						<td id="total-expense">-{{ totalExpense }}</td>
 					</tr>
 				</table>
 			</div>
@@ -192,24 +182,15 @@ export default {
 		totalIncome: function() {
 			let total = 0;
 			for (let i = 0; i < this.infos.length; i++) {
-				if (this.infos[i].income === null) {
-					total += 0;
-				} else {
-					total += parseInt(this.infos[i].income);
-				}
+				total += this.infos[i].income;
 			}
 			return this.addComaToNum(total);
 		},
 		totalExpense: function() {
 			let total = 0;
 			for (let i = 0; i < this.infos.length; i++) {
-				if (this.infos[i].expense === null) {
-					total += 0;
-				} else {
-					total += parseInt(this.infos[i].expense);
-				}
+				total += this.infos[i].expense;
 			}
-
 			return this.addComaToNum(total);
 		},
 	},
@@ -244,8 +225,13 @@ export default {
 			if (category === 'content') {
 				this.beforeContentCache = info.content;
 				info.contentEditing = true;
-			} else if (category === 'income') info.incomeEditing = true;
-			else info.expenseEditing = true;
+			} else if (category === 'income') {
+				this.beforeIncomeCache = info.income;
+				info.incomeEditing = true;
+			} else {
+				this.beforeExpenseCache = info.expense;
+				info.expenseEditing = true;
+			}
 		},
 
 		// esc나 blur 시 수정 취소
@@ -264,22 +250,9 @@ export default {
 
 		// if 빈 문자열 === 수정 안 됨
 		doneEdit(info, category) {
-			if (category === 'content') {
-				if (info.content.trim() === '') {
-					info.content = this.beforeContentCache;
-				}
-				info.contentEditing = false;
-			} else if (category === 'income') {
-				if (info.income == '') {
-					info.income = this.beforeIncomeCache;
-				}
-				info.incomeEditing = false;
-			} else {
-				if (info.expense == '') {
-					info.expense = this.beforeContentCache;
-				}
-				info.expenseEditing = false;
-			}
+			if (category === 'content') info.contentEditing = false;
+			else if (category === 'income') info.incomeEditing = false;
+			else info.expenseEditing = false;
 		},
 		// income 더블클릭 시 수정.
 		// if 빈 숫자열 === 수정 안 됨
@@ -291,10 +264,8 @@ export default {
 					name: this.adding,
 				});
 				this.adding = '';
-				this.addingIncome = false;
-			} else {
-				this.addingIncome = false;
 			}
+			this.addingIncome = false;
 		},
 		doneAddExpense() {
 			if (!this.adding.trim() == '') {
@@ -303,27 +274,18 @@ export default {
 					name: this.adding,
 				});
 				this.adding = '';
-				this.addingExpense = false;
-			} else {
-				this.addingExpense = false;
 			}
+			this.addingExpense = false;
 		},
-	},
-	// esc나 blur 시 수정 취소
+		// 수입 카테고리 추가
+		addIncomeCate() {
+			this.addingIncome = true;
+		},
 
-	// expense 더블클릭 시 수정.
-	// if 빈 숫자열 === 수정 안 됨
-
-	// esc나 blur 시 수정 취소
-
-	// 수입 카테고리 추가
-	addIncomeCate() {
-		this.addingIncome = true;
-	},
-
-	// 지출 카테고리 추가
-	addExpenseCate() {
-		this.addingExpense = true;
+		// 지출 카테고리 추가
+		addExpenseCate() {
+			this.addingExpense = true;
+		},
 	},
 	directives: {
 		focus: {
@@ -332,6 +294,8 @@ export default {
 			},
 		},
 	},
+
+	// if 빈 숫자열 === 수정 안 됨
 };
 </script>
 
