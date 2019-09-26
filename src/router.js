@@ -16,6 +16,7 @@ import AccountBook from './경연/AccountBook.vue';
 import Habit from './경연/Habit.vue';
 import Habit_1 from './경연/Habit-1.vue';
 import PhotoAlbum from './경연/PhotoAlbum.vue';
+import PhotoAlbum_1 from './경연/PhotoAlbum-1.vue';
 import TodoList from './경연/TodoList.vue';
 
 Vue.use(Router);
@@ -83,6 +84,11 @@ export default new Router({
 			path: '/PhotoAlbum',
 			name: 'PhotoAlbum',
 			component: PhotoAlbum,
+		},
+		{
+			path: '/PhotoAlbum-1',
+			name: 'PhotoAlbum-1',
+			component: PhotoAlbum_1,
 		},
 		{
 			path: '/TodoList',

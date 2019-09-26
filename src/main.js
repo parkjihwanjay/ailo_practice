@@ -7,7 +7,7 @@ import Multiselect from 'vue-multiselect';
 import VModal from 'vue-js-modal';
 
 Vue.component('multiselect', Multiselect);
-Vue.use(VModal);
+Vue.use(VModal, { dynamic: true, dynamicDefaults: { clickToClose: true } });
 
 Vue.config.productionTip = false;
 
