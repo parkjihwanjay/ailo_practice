@@ -32,9 +32,7 @@
 						:key="index2"
 						:class="{ last_month: day.class === 'last_month' }"
 					>
-						<span :class="{ rounded: isToday(currentYear, currentMonth, day.day) }">{{
-							day.day
-						}}</span>
+						<span :class="{ rounded: isToday(currentYear, currentMonth, day) }">{{ day.day }}</span>
 					</td>
 				</tr>
 			</tbody>
@@ -43,6 +41,7 @@
 </template>
 
 <script>
+import { log } from 'util';
 // import { log } from 'util';
 export default {
 	name: 'Calendar',
@@ -67,7 +66,7 @@ export default {
 	},
 	// 요일을 바꿔을 때 실행
 	watch: {
-		start_day: function(start_day) {
+		start_day: function() {
 			this.currentMonthStartWeekIndex = this.getStartWeek(
 				this.currentYear,
 				this.currentMonth,
@@ -139,32 +138,25 @@ export default {
 				case 10:
 				case 12:
 					return 31;
-					break;
 				case 4:
 				case 6:
 				case 9:
 				case 11:
 					return 30;
-					break;
 				case 2:
 					if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
 						return 29;
 					} else {
 						return 28;
 					}
-					break;
 				default:
 					console.log('unknown month ' + month);
 					return 0;
-					break;
 			}
 		},
 		// 해당하는 년도의 해당 월의 첫번째 요일을 계산하는 함수
 		getStartWeek: function(targetYear, targetMonth, start_day) {
-			// let now = new Date();
-			let firstDate = String(new Date(targetYear, targetMonth - 1, 1));
-			// let firstDate_split = firstDate.split(" ");
-			let startWeek = firstDate.split(' ')[0];
+			let startWeek = this.$moment(new Date(targetYear, targetMonth - 1, 1)).format('ddd');
 
 			if (start_day === 'Sun') {
 				start_day = 0;
@@ -180,25 +172,18 @@ export default {
 				case 'Sun':
 					if (start_day === -1) return 6;
 					return 0 + start_day;
-					break;
 				case 'Mon':
 					return 1 + start_day;
-					break;
 				case 'Tue':
 					return 2 + start_day;
-					break;
 				case 'Wed':
 					return 3 + start_day;
-					break;
 				case 'Thu':
 					return 4 + start_day;
-					break;
 				case 'Fri':
 					return 5 + start_day;
-					break;
 				case 'Sat':
 					return 6 + start_day;
-					break;
 
 				default:
 					alert('unknown week');
@@ -234,7 +219,8 @@ export default {
 			return (
 				year == this.today.getFullYear() &&
 				month == this.today.getMonth() + 1 &&
-				day == this.today.getDate()
+				day.day == this.today.getDate() &&
+				day.class !== 'last_month'
 			);
 		},
 	},

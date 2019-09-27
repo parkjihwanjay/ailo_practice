@@ -8,6 +8,7 @@ import VModal from 'vue-js-modal';
 
 Vue.component('multiselect', Multiselect);
 Vue.use(VModal, { dynamic: true, dynamicDefaults: { clickToClose: true } });
+Vue.use(require('vue-moment'));
 
 Vue.config.productionTip = false;
 

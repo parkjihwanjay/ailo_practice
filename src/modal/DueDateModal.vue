@@ -9,7 +9,7 @@
 			<input type="date" v-model="todo.dueDate" />
 			<br />
 			<input type="time" v-model="todo.dueTime" />
-			<div v-if="todo.completed !== 'O'">
+			<div v-show="todo.completed !== 'O'">
 				<h4>미루기</h4>
 				<form name="delay">
 					<input type="radio" value="tomorrow" v-model="todo.delay" @click="setTomorrow" />
@@ -43,7 +43,7 @@ export default {
 		tomorrow: function() {
 			let nextDay = new Date(this.today);
 			nextDay.setDate(this.today.getDate() + 1);
-			return nextDay.getFullYear() + '-' + (nextDay.getMonth() + 1) + '-' + nextDay.getDate();
+			return this.$moment(nextDay).format('YYYY-MM-DD');
 		},
 	},
 	data() {
@@ -62,10 +62,10 @@ export default {
 	},
 	methods: {
 		setTomorrow() {
-			this.delayDate = this.tomorrow;
+			this.todo.delayDate = this.tomorrow;
 		},
 		setNone() {
-			this.delayDate = '';
+			this.todo.delayDate = '';
 		},
 		applyDueDate() {
 			this.$emit('close');
