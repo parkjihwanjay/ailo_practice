@@ -56,26 +56,24 @@ export default {
 	},
 	methods: {
 		addHabit: function() {
-			if (this.newTask.trim().length == 0) {
-				return;
-			}
+			if (this.newTask.trim().length === 0) return;
+
 			this.tasks.push({
 				id: this.taskID,
 				title: this.newTask,
 				completed: [false, false, false, false, false, false, false],
 			});
+
 			this.newTask = '';
 			this.taskID++;
 		},
 		// computed는 parameter를 전달 받지 못해서 method로 성공률 계산
-		successRate(value) {
+		successRate(task) {
 			let count = 0;
-			value.completed.forEach(function(e) {
-				if (e === true) {
-					count++;
-				}
+			task.completed.forEach(function(e) {
+				if (e) count++;
 			});
-			return Math.round((count / value.completed.length) * 100);
+			return Math.round((count / task.completed.length) * 100);
 		},
 	},
 };

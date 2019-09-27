@@ -9,19 +9,9 @@
 		</div>
 
 		<div>배열</div>
-		<input
-			type="radio"
-			name="array"
-			v-model="basic_customizing.array"
-			value="M-D-M-D"
-		/>M-D-M-D
+		<input type="radio" name="array" v-model="basic_customizing.array" value="M-D-M-D" />M-D-M-D
 		<br />
-		<input
-			type="radio"
-			name="array"
-			v-model="basic_customizing.array"
-			value="MM-DD"
-		/>MM-DD
+		<input type="radio" name="array" v-model="basic_customizing.array" value="MM-DD" />MM-DD
 		<br />
 
 		<div>적용</div>
@@ -32,10 +22,7 @@
 		<div>Daily</div>
 
 		<div>기본 구성</div>
-		<div
-			v-for="element in basic_customizing.basic_component"
-			:key="element.name"
-		>
+		<div v-for="element in basic_customizing.basic_component" :key="element.name">
 			<input type="checkbox" :name="element.name" v-model="element.checked" />
 			<label :for="element.name">{{ element.name }}</label>
 		</div>

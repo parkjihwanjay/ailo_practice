@@ -34,56 +34,60 @@
 								placeholder="선택하기"
 							></multiselect>
 						</td>
-						<td v-if="!info.contentEditing" @dblclick="editContent(info)">
+
+						<td v-if="!info.contentEditing" @dblclick="edit(info, 'content')">
 							{{ info.content }}
 						</td>
-						<input
-							type="text"
-							v-else
-							v-model="info.content"
-							blur="doneContentEdit(info)"
-							@keyup.enter="doneContentEdit(info)"
-							@keyup.esc="cancelContentEdit(info)"
-							v-focus
-						/>
-						<td id="income-num" v-if="!info.incomeEditing" v-on:dblclick="editIncome(info)">
+
+						<td v-else>
+							<input
+								type="text"
+								v-model="info.content"
+								blur="doneEdit(info, 'content')"
+								@keyup.enter="doneEdit(info, 'content')"
+								@keyup.esc="cancelEdit(info, 'content')"
+								v-focus
+							/>
+						</td>
+
+						<td id="income-num" v-if="!info.incomeEditing" v-on:dblclick="edit(info, 'income')">
 							<!-- 숫자를 스트링으로 바꿈 -->
-							<p v-if="info.income">+{{ Number(info.income).toLocaleString() }}</p>
+							+
+							<p v-if="info.income">{{ info.income }}</p>
 						</td>
 						<input
 							v-else
-							type="number"
-							v-model="info.income"
-							v-on:blur="doneIncomeEdit(info)"
-							v-on:keyup.enter="doneIncomeEdit(info)"
-							v-on:keyup.esc="cancelIncomeEdit(info)"
+							v-model.number="info.income"
+							v-on:blur="doneEdit(info, 'income')"
+							v-on:keyup.enter="doneEdit(info, 'income')"
+							v-on:keyup.esc="cancelEdit(info, 'income')"
 							v-focus
 						/>
-						<td id="expense-num" v-if="!info.expenseEditing" v-on:dblclick="editExpense(info)">
+
+						<td id="expense-num" v-if="!info.expenseEditing" v-on:dblclick="edit(info, 'expense')">
 							<!-- 숫자를 스트링으로 바꿈 -->
-							<p v-if="info.expense">-{{ Number(info.expense).toLocaleString() }}</p>
+							-
+							<p v-if="info.expense">{{ info.expense.toLocaleString() }}</p>
 						</td>
 						<input
-							type="number"
 							v-else
-							v-model="info.expense"
-							v-on:blur="doneExpenseEdit(info)"
-							v-on:keyup.enter="doneExpenseEdit(info)"
-							v-on:keyup.esc="cancelExpenseEdit(info)"
+							v-model.number="info.expense"
+							v-on:blur="doneEdit(info, 'expense')"
+							v-on:keyup.enter="doneEdit(info, 'expense')"
+							v-on:keyup.esc="cancelEdit(info, 'expense')"
 							v-focus
 						/>
 					</tr>
-				</table>
 
-				<table>
-					<td id="add-btn" @click="addTable()">+</td>
-				</table>
-				<table>
-					<td id="totals">합계</td>
-					<td id="total-income" v-if="totalIncome === 'NaN'">+0</td>
-					<td id="total-income" v-else>+{{ totalIncome }}</td>
-					<td id="total-expense" v-if="totalExpense === 'NaN'">-0</td>
-					<td id="total-expense" v-else>-{{ totalExpense }}</td>
+					<tr>
+						<td colspan="5" id="add-btn" @click="addTable()">+</td>
+					</tr>
+
+					<tr>
+						<td colspan="3" id="totals">합계</td>
+						<td id="total-income">+{{ totalIncome }}</td>
+						<td id="total-expense">-{{ totalExpense }}</td>
+					</tr>
 				</table>
 			</div>
 			<div class="category-box">
@@ -93,36 +97,40 @@
 					<li id="cate-income-list" v-for="(i, index) in category" :key="index">
 						<span v-if="i.value === 'income'">{{ i.name }}</span>
 					</li>
-					<span @click="addIncomeCate()" v-if="!addingIncome" class="btn">+</span>
-					<input
-						type="text"
-						v-else
-						v-model="adding"
-						v-on:blur="doneAddIncome()"
-						v-on:keyup.enter="doneAddIncome()"
-						v-focus
-					/>
+
+					<template name="category-income-plus">
+						<span @click="addIncomeCate()" v-if="!addingIncome" class="btn">+</span>
+						<input
+							v-else
+							type="text"
+							v-model="adding"
+							v-on:blur="doneAddIncome()"
+							v-on:keyup.enter="doneAddIncome()"
+							v-focus
+						/>
+					</template>
 				</ul>
 				<h5 style="color: red">지출</h5>
 				<ul>
 					<li id="cate-expense-list" v-for="(i, index) in category" :key="index">
 						<span v-if="i.value === 'expense'">{{ i.name }}</span>
 					</li>
-					<span @click="addExpenseCate()" v-if="!addingExpense" class="btn">+</span>
-					<input
-						type="text"
-						v-else
-						v-model="adding"
-						v-on:blur="doneAddExpense()"
-						v-on:keyup.enter="doneAddExpense()"
-						v-focus
-					/>
+					<template name="category-expense-plus">
+						<span v-if="!addingExpense" @click="addExpenseCate()" class="btn">+</span>
+						<input
+							type="text"
+							v-else
+							v-model="adding"
+							v-on:blur="doneAddExpense()"
+							v-on:keyup.enter="doneAddExpense()"
+							v-focus
+						/>
+					</template>
 				</ul>
 			</div>
 		</div>
 	</div>
 </template>
-
 <script>
 export default {
 	name: 'account-book',
@@ -172,43 +180,30 @@ export default {
 	},
 	computed: {
 		totalIncome: function() {
-			var total = 0;
-			for (var i = 0; i < this.infos.length; i++) {
-				if (this.infos[i].income === null) {
-					total += 0;
-				} else {
-					total += parseInt(this.infos[i].income);
-				}
+			let total = 0;
+			for (let i = 0; i < this.infos.length; i++) {
+				total += this.infos[i].income;
 			}
-
-			// 숫자에 , 붙이는 함수
-			var str = total.toString().split('.');
-			if (str[0].length >= 4) {
-				str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-			}
-
-			return str.join('.');
+			return this.addComaToNum(total);
 		},
 		totalExpense: function() {
-			var total = 0;
-			for (var i = 0; i < this.infos.length; i++) {
-				if (this.infos[i].expense === null) {
-					total += 0;
-				} else {
-					total += parseInt(this.infos[i].expense);
-				}
+			let total = 0;
+			for (let i = 0; i < this.infos.length; i++) {
+				total += this.infos[i].expense;
 			}
-
-			// 숫자에 , 붙이는 함수
-			var str = total.toString().split('.');
-			if (str[0].length >= 4) {
-				str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-			}
-
-			return str.join('.');
+			return this.addComaToNum(total);
 		},
 	},
 	methods: {
+		// 숫자에 , 붙이는 함수
+		addComaToNum(num) {
+			let str = num.toString().split('.');
+			if (str[0].length >= 4) {
+				str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+			}
+
+			return str.join('.');
+		},
 		// 테이블 하단 + 클릭 시 테이블 생성
 		addTable() {
 			this.infos.push({
@@ -226,61 +221,42 @@ export default {
 		},
 
 		// 내용 더블클릭 시 수정
-		editContent(info) {
-			this.beforeContentCache = info.content;
-			info.contentEditing = true;
+		edit(info, category) {
+			if (category === 'content') {
+				this.beforeContentCache = info.content;
+				info.contentEditing = true;
+			} else if (category === 'income') {
+				this.beforeIncomeCache = info.income;
+				info.incomeEditing = true;
+			} else {
+				this.beforeExpenseCache = info.expense;
+				info.expenseEditing = true;
+			}
 		},
-		// if 빈 문자열 === 수정 안 됨
-		doneContentEdit(info) {
-			if (info.content.trim() === '') {
+
+		// esc나 blur 시 수정 취소
+		cancelEdit(info, category) {
+			if (category === 'content') {
 				info.content = this.beforeContentCache;
-			}
-			info.contentEditing = false;
-		},
-		// esc나 blur 시 수정 취소
-		cancelContentEdit: function(info) {
-			info.content = this.beforeContentCache;
-			info.contentEditing = false;
-		},
-
-		// income 더블클릭 시 수정.
-		editIncome(info) {
-			info.incomeEditing = true;
-		},
-		// if 빈 숫자열 === 수정 안 됨
-		doneIncomeEdit(info) {
-			if (info.income == '') {
+				info.contentEditing = false;
+			} else if (category === 'income') {
 				info.income = this.beforeIncomeCache;
-			}
-			info.incomeEditing = false;
-		},
-		// esc나 blur 시 수정 취소
-		cancelIncomeEdit(info) {
-			info.content = this.beforeIncomeCache;
-			info.incomeEditing = false;
-		},
-
-		// expense 더블클릭 시 수정.
-		editExpense(info) {
-			info.expenseEditing = true;
-		},
-		// if 빈 숫자열 === 수정 안 됨
-		doneExpenseEdit(info) {
-			if (info.expense == '') {
+				info.incomeEditing = false;
+			} else {
 				info.expense = this.beforeContentCache;
+				info.expenseEditing = false;
 			}
-			info.expenseEditing = false;
-		},
-		// esc나 blur 시 수정 취소
-		cancelExpenseEdit(info) {
-			info.expense = this.beforeContentCache;
-			info.expenseEditing = false;
 		},
 
-		// 수입 카테고리 추가
-		addIncomeCate() {
-			this.addingIncome = true;
+		// if 빈 문자열 === 수정 안 됨
+		doneEdit(info, category) {
+			if (category === 'content') info.contentEditing = false;
+			else if (category === 'income') info.incomeEditing = false;
+			else info.expenseEditing = false;
 		},
+		// income 더블클릭 시 수정.
+		// if 빈 숫자열 === 수정 안 됨
+
 		doneAddIncome() {
 			if (!this.adding.trim() == '') {
 				this.category.push({
@@ -288,15 +264,8 @@ export default {
 					name: this.adding,
 				});
 				this.adding = '';
-				this.addingIncome = false;
-			} else {
-				this.addingIncome = false;
 			}
-		},
-
-		// 지출 카테고리 추가
-		addExpenseCate() {
-			this.addingExpense = true;
+			this.addingIncome = false;
 		},
 		doneAddExpense() {
 			if (!this.adding.trim() == '') {
@@ -305,10 +274,17 @@ export default {
 					name: this.adding,
 				});
 				this.adding = '';
-				this.addingExpense = false;
-			} else {
-				this.addingExpense = false;
 			}
+			this.addingExpense = false;
+		},
+		// 수입 카테고리 추가
+		addIncomeCate() {
+			this.addingIncome = true;
+		},
+
+		// 지출 카테고리 추가
+		addExpenseCate() {
+			this.addingExpense = true;
 		},
 	},
 	directives: {
@@ -318,6 +294,8 @@ export default {
 			},
 		},
 	},
+
+	// if 빈 숫자열 === 수정 안 됨
 };
 </script>
 
