@@ -12,17 +12,17 @@
 			<div v-if="todo.completed !== 'O'">
 				<h4>미루기</h4>
 				<form name="delay">
-					<input type="radio" value="tomorrow" v-model="delay" @click="setTomorrow" />
+					<input type="radio" value="tomorrow" v-model="todo.delay" @click="setTomorrow" />
 					내일
 					<br />
 					{{ tomorrow }}
 					<br />
-					<input type="radio" value="otherDays" v-model="delay" />
+					<input type="radio" value="otherDays" v-model="todo.delay" />
 					날짜 선택
 					<br />
-					<input v-show="delay === 'otherDays'" type="date" v-model="todo.delayDate" />
+					<input v-show="todo.delay === 'otherDays'" type="date" v-model="todo.delayDate" />
 					<br />
-					<input type="radio" value="none" v-model="delay" @click="setNone" />안함
+					<input type="radio" value="none" v-model="todo.delay" @click="setNone" />안함
 				</form>
 			</div>
 			<br />
@@ -50,13 +50,14 @@ export default {
 		return {
 			lastdueDate: '',
 			lastdueTime: '',
+			lastDelay: '',
 			lastdelayDate: '',
-			delay: 'otherDays',
 		};
 	},
 	mounted: function() {
 		this.lastdueDate = this.todo.dueDate;
 		this.lastdueTime = this.todo.dueTime;
+		this.lastDelay = this.todo.delay;
 		this.lastdelayDate = this.todo.delayDate;
 	},
 	methods: {
@@ -72,6 +73,7 @@ export default {
 		cancelDueDate() {
 			this.todo.dueDate = this.lastdueDate;
 			this.todo.dueTime = this.lastdueTime;
+			this.todo.delay = this.lastDelay;
 			this.todo.delayDate = this.lastdelayDate;
 			this.$emit('close');
 		},

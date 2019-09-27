@@ -73,19 +73,7 @@ export default {
 			todoID: 3,
 			importanceChoice: { one: '★', two: '★★' },
 			completedChoice: { low: '✕', middle: '▵', high: 'O' },
-			// rate: function() {
-			//   let count = 0;
-			//   this.todos.forEach(function(i) {
-			//     if (i.completed === "O") {
-			//       count++;
-			//     }
-			//   });
-			//   return Math.round((count / this.todos.length) * 100);
-			// }, 하면 computed로
 			beforeEditCache: '',
-			beforeEditCacheImportance: '',
-			beforeEditCacheDate: '',
-			beforeEditCacheTime: '',
 
 			todos: [
 				{
@@ -96,6 +84,7 @@ export default {
 					editing: false,
 					dueDate: '',
 					dueTime: '',
+					delay: '',
 					delayDate: '',
 				},
 				{
@@ -106,6 +95,7 @@ export default {
 					editing: false,
 					dueDate: '',
 					dueTime: '',
+					delay: '',
 					delayDate: '',
 				},
 			],
